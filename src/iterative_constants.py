@@ -17,7 +17,12 @@ def get_counter() -> int:
 class Formatter:
 
     @staticmethod
-    def _i_to_script(i: int, subscript: bool = True):
+    def update_counter():
+        global _IterativeConstant_operator_counter
+        _IterativeConstant_operator_counter += 1
+
+    @staticmethod
+    def _i_to_script(i: int, subscript: bool = True) -> str:
         subscripts = {
             '0': '₀', '1': '₁', '2': '₂', '3': '₃', '4': '₄', '5': '₅', '6': '₆', '7': '₇', '8': '₈', '9': '₉'
         }
@@ -33,6 +38,15 @@ class Formatter:
                 i_string += superscripts[character]
         return i_string
 
+    @staticmethod
+    def check_slice(item: slice):
+        if not isinstance(item, slice):
+            raise IndexError("Cannot take integer slice, use .get() instead.")
+        if item.start is not None:
+            raise IndexError("Start cannot be defined for slice.")
+        if item.step is not None:
+            raise IndexError("Step cannot be defined for slice.")
+
 
 class ScalerHolder(Formatter):
 
@@ -43,6 +57,7 @@ class ScalerHolder(Formatter):
         for initial_constant in initial_constants:
             initial_constant = Decimal(initial_constant)
             self.constants.append(initial_constant)
+        self.update_counter()
 
     def condense(self) -> str:
         condensed_string = ""
@@ -53,17 +68,32 @@ class ScalerHolder(Formatter):
             condensed_string += f"{formatted_value} {self.name}{i_string}"
             if i != num_constant - 1:
                 condensed_string += " + "
+        self.update_counter()
         return condensed_string
 
     def __str__(self) -> str:
+        self.update_counter()
         return self.condense()
 
     def __eq__(self, holder: ScalerHolder) -> bool:
+        self.update_counter()
         if isinstance(holder, ScalerHolder):
             return self.condense() == holder.condense()
         return NotImplemented
 
+    def __getitem__(self, item: slice) -> ScalerHolder:
+        self.check_slice(item)
+
+        new_constants = self.constants[item]
+        self.update_counter()
+        return ScalerHolder(initial_constants=new_constants, name=self.name)
+
+    def get(self, i: int) -> Decimal:
+        self.update_counter()
+        return self.constants[i]
+
     def copy(self) -> ScalerHolder:
+        self.update_counter()
         return ScalerHolder(initial_constants=self.constants, name=self.name)
 
     def scale(self, value: Union[float, Decimal]) -> ScalerHolder:
@@ -71,11 +101,15 @@ class ScalerHolder(Formatter):
         new_constants = []
         for constant in self.constants:
             new_constants.append(value * constant)
+
+        self.update_counter()
         return ScalerHolder(initial_constants=new_constants, name=self.name)
 
     def increase_scaler(self) -> ScalerHolder:
         holder = self.copy()
         holder.constants.insert(0, Decimal(0))
+
+        self.update_counter()
         return holder
 
     def add(self, holder: ScalerHolder) -> ScalerHolder:
@@ -92,6 +126,7 @@ class ScalerHolder(Formatter):
             if i < len_holder_constants:
                 new_constants[i] += holder.constants[i]
 
+        self.update_counter()
         return ScalerHolder(initial_constants=new_constants, name=self.name)
 
     def multiply(self, holder: ScalerHolder) -> ScalerHolder:
@@ -115,6 +150,7 @@ class ScalerHolder(Formatter):
                     constant += self_holder.constants[i] * holder.constants[n - i]
             new_constants.append(constant)
 
+        self.update_counter()
         return ScalerHolder(initial_constants=new_constants, name=self.name)
 
 
@@ -122,8 +158,10 @@ class IterativeConstant(Formatter):
 
     def __init__(self, initial_holders: List[ScalerHolder], name: str):
         super().__init__()
-        self.name: str = name
         self.holders: List[ScalerHolder] = initial_holders
+        self.name = name
+        self.verify_names(self)
+        self.update_counter()
 
     def condense(self) -> str:
         condensed_string = "["
@@ -136,36 +174,81 @@ class IterativeConstant(Formatter):
                 condensed_string += ", "
 
         condensed_string += "]"
+        self.update_counter()
         return condensed_string
 
     def __str__(self) -> str:
+        self.update_counter()
         return self.condense()
 
     def __eq__(self, iterator: IterativeConstant) -> bool:
+        self.update_counter()
         if isinstance(iterator, IterativeConstant):
             return self.condense() == iterator.condense()
         return NotImplemented
 
+    def __getitem__(self, item: slice) -> IterativeConstant:
+        self.check_slice(item)
+
+        new_holders = self.holders[item]
+        self.update_counter()
+        return IterativeConstant(initial_holders=new_holders, name=self.name)
+
+    def get(self, i: int) -> ScalerHolder:
+        self.update_counter()
+        return self.holders[i]
+
     def copy(self) -> IterativeConstant:
+        self.update_counter()
         return IterativeConstant(initial_holders=self.holders, name=self.name)
 
     @staticmethod
-    def update_counter():
-        global _IterativeConstant_operator_counter
-        _IterativeConstant_operator_counter += 1
+    def verify_names(iterator: IterativeConstant):
+        names = []
+        for holder in iterator.holders:
+            names.append(holder.name)
+
+        if len(names) > 1:
+            base_name = names[0]
+            for name in names:
+                if name != base_name:
+                    raise ValueError("Names do not match in holders.")
 
     def update(self, i: int, holder: ScalerHolder) -> IterativeConstant:
-        self.update_counter()
-
-        if i > len(self.holders):
+        if i >= len(self.holders):
             raise ValueError(f"Update at index {i} out of range {len(self.holders)}")
 
         iterator = self.copy()
-        if i < len(iterator.holders):
-            iterator.holders[i] = holder
-        elif i == len(iterator.holders):
-            iterator.holders.append(holder)
+        iterator.holders[i] = holder
+        self.verify_names(iterator)
+        self.update_counter()
         return iterator
 
-    def get(self, i: int) -> ScalerHolder:
-        return self.holders[i]
+    def append(self, holder: ScalerHolder) -> IterativeConstant:
+        iterator = self.copy()
+        iterator.holders.append(holder)
+        self.verify_names(iterator)
+        self.update_counter()
+        return iterator
+
+    def conv(self, iterator: IterativeConstant, i: int, n: int) -> ScalerHolder:
+        self_iterator = self.copy()
+
+        if len(self_iterator.holders) != len(iterator.holders):
+            raise ValueError("Sizes of iterators do not match.")
+        if len(iterator.holders) == 0:
+            raise ValueError("Cannot take convolution of empty iterators")
+        if n > len(self_iterator.holders):
+            raise ValueError("Upper index, n, cannot be larger than size of iterators")
+        if i > n:
+            raise ValueError("Lower index, i, cannot be larger than upper index.")
+
+        holder = ScalerHolder(initial_constants=[0], name=iterator.holders[0].name)
+        for i in range(i, n + 1):
+            a_i = self_iterator.get(i)
+            b_n_minus_i = iterator.get(n - i)
+            c_n_i = a_i.multiply(b_n_minus_i)
+            holder = holder.add(c_n_i)
+
+        self.update_counter()
+        return holder
