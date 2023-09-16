@@ -1,0 +1,9 @@
+name: young-laplace
+channels:
+  - defaults
+dependencies:
+  - python>=3.11
+  - numpy
+  - numba
+  - matplotlib
+  - tqdm
