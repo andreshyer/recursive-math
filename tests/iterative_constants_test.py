@@ -1,9 +1,10 @@
 import unittest
 from decimal import Decimal
 
+from tqdm import tqdm
 from numpy import array
 
-from src import IterativeConstant, ScalerHolder, Series, Tensor
+from src import IterativeConstant, ScalerHolder, Series, Tensor, Progress
 
 
 class BaseOperatorsTest(unittest.TestCase):
