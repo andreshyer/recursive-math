@@ -65,3 +65,9 @@ class Tensor:
 
     def reduce(self, scaler_value: float) -> Series:
         return Series(evaluate_polynomials(scaler_value, self.constants))
+
+    def flatten(self) -> Series:
+        for c in self.constants:
+            if len(c) != 1:
+                raise ValueError(f"Cannot flatten {self}")
+        return Series(evaluate_polynomials(1, self.constants))

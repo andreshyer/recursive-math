@@ -32,7 +32,7 @@ class Sin(IterativeConstant):
 
 class Cos(IterativeConstant):
 
-    def __init__(self, name: str, holder_name: str, max_n: int = 100):
+    def __init__(self, name: str, holder_name: str, max_n: int = 26):
         self.max_n: int = max_n
         holder = ScalerHolder(initial_constants=[1], name=holder_name)
         super().__init__(initial_holders=[holder], name=name)
