@@ -153,6 +153,28 @@ class BaseOperatorsTest(unittest.TestCase):
                            [1.0, 2.0, 3.0]]))
         self.assertEqual(a0, a2)
 
+    def test_iterator_scale(self):
+        a = ScalerHolder(initial_constants=[1, 2, 3], name="Bo")
+        a0 = IterativeConstant(initial_holders=[a, a, a], name="a")
+
+        a0 = a0.scale(2)
+
+        a = ScalerHolder(initial_constants=[2, 4, 6], name="Bo")
+        a2 = IterativeConstant(initial_holders=[a, a, a], name="a")
+        self.assertEqual(a0, a2)
+
+    def test_iterator_poly_scale(self):
+        a = ScalerHolder(initial_constants=[1, 2, 3], name="Bo")
+        a0 = IterativeConstant(initial_holders=[a, a, a], name="a")
+
+        a0 = a0.poly_scale(2)
+
+        holder_1 = ScalerHolder(initial_constants=[1, 2, 3], name="Bo")
+        holder_2 = ScalerHolder(initial_constants=[2, 4, 6], name="Bo")
+        holder_3 = ScalerHolder(initial_constants=[4, 8, 12], name="Bo")
+        a2 = IterativeConstant(initial_holders=[holder_1, holder_2, holder_3], name="a")
+        self.assertEqual(a0, a2)
+
 
 if __name__ == '__main__':
     unittest.main()

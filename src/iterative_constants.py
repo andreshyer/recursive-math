@@ -6,7 +6,6 @@ from numpy import array
 
 from src.series import Series, Tensor
 
-_IterativeConstant_operator_counter = 0
 getcontext().prec = 1000
 
 
@@ -14,16 +13,7 @@ def set_decimal_precision(precision: int):
     getcontext().prec = precision
 
 
-def get_counter() -> int:
-    return _IterativeConstant_operator_counter
-
-
 class Formatter:
-
-    @staticmethod
-    def update_counter():
-        global _IterativeConstant_operator_counter
-        _IterativeConstant_operator_counter += 1
 
     @staticmethod
     def _i_to_script(i: int, subscript: bool = True) -> str:
@@ -61,7 +51,6 @@ class ScalerHolder(Formatter):
         for initial_constant in initial_constants:
             initial_constant = Decimal(initial_constant)
             self.constants.append(initial_constant)
-        self.update_counter()
 
     def condense(self) -> str:
         condensed_string = ""
@@ -72,15 +61,12 @@ class ScalerHolder(Formatter):
             condensed_string += f"{formatted_value} {self.name}{i_string}"
             if i != num_constant - 1:
                 condensed_string += " + "
-        self.update_counter()
         return condensed_string
 
     def __str__(self) -> str:
-        self.update_counter()
         return self.condense()
 
     def __eq__(self, holder: ScalerHolder) -> bool:
-        self.update_counter()
         if isinstance(holder, ScalerHolder):
             return self.condense() == holder.condense()
         return NotImplemented
@@ -89,18 +75,15 @@ class ScalerHolder(Formatter):
         self.check_slice(item)
 
         new_constants = self.constants[item]
-        self.update_counter()
         return ScalerHolder(initial_constants=new_constants, name=self.name)
 
     def __len__(self):
         return len(self.constants)
 
     def get(self, i: int) -> Decimal:
-        self.update_counter()
         return self.constants[i]
 
     def copy(self) -> ScalerHolder:
-        self.update_counter()
         return ScalerHolder(initial_constants=self.constants, name=self.name)
 
     def freeze(self) -> Series:
@@ -115,14 +98,11 @@ class ScalerHolder(Formatter):
         for constant in self.constants:
             new_constants.append(value * constant)
 
-        self.update_counter()
         return ScalerHolder(initial_constants=new_constants, name=self.name)
 
     def increase_scaler(self) -> ScalerHolder:
         holder = self.copy()
         holder.constants.insert(0, Decimal(0))
-
-        self.update_counter()
         return holder
 
     def add(self, holder: ScalerHolder) -> ScalerHolder:
@@ -139,7 +119,6 @@ class ScalerHolder(Formatter):
             if i < len_holder_constants:
                 new_constants[i] += holder.constants[i]
 
-        self.update_counter()
         return ScalerHolder(initial_constants=new_constants, name=self.name)
 
     def multiply(self, holder: ScalerHolder) -> ScalerHolder:
@@ -163,7 +142,6 @@ class ScalerHolder(Formatter):
                     constant += self_holder.constants[i] * holder.constants[n - i]
             new_constants.append(constant)
 
-        self.update_counter()
         return ScalerHolder(initial_constants=new_constants, name=self.name)
 
 
@@ -174,7 +152,6 @@ class IterativeConstant(Formatter):
         self.holders: List[ScalerHolder] = initial_holders
         self.name = name
         self.verify_names(self)
-        self.update_counter()
 
     def condense(self) -> str:
         condensed_string = "["
@@ -187,15 +164,12 @@ class IterativeConstant(Formatter):
                 condensed_string += ", "
 
         condensed_string += "]"
-        self.update_counter()
         return condensed_string
 
     def __str__(self) -> str:
-        self.update_counter()
         return self.condense()
 
     def __eq__(self, iterator: IterativeConstant) -> bool:
-        self.update_counter()
         if isinstance(iterator, IterativeConstant):
             return self.condense() == iterator.condense()
         return NotImplemented
@@ -204,18 +178,15 @@ class IterativeConstant(Formatter):
         self.check_slice(item)
 
         new_holders = self.holders[item]
-        self.update_counter()
         return IterativeConstant(initial_holders=new_holders, name=self.name)
 
     def __len__(self):
         return len(self.holders)
 
     def get(self, i: int) -> ScalerHolder:
-        self.update_counter()
         return self.holders[i]
 
     def copy(self) -> IterativeConstant:
-        self.update_counter()
         return IterativeConstant(initial_holders=self.holders, name=self.name)
 
     def freeze(self) -> Tensor:
@@ -223,6 +194,21 @@ class IterativeConstant(Formatter):
         for holder in self.holders:
             constants.append(holder.freeze().constants)
         return Tensor(array(constants))
+
+    def scale(self, value: Union[float, Decimal]) -> IterativeConstant:
+        new_holders = []
+        for holder in self.holders:
+            new_holders.append(holder.scale(value))
+        return IterativeConstant(initial_holders=new_holders, name=self.name)
+
+    def poly_scale(self, value: Union[float, Decimal]) -> IterativeConstant:
+        value = Decimal(value)
+
+        new_holders = []
+        for i, holder in enumerate(self.holders):
+            p_value = value ** Decimal(i)
+            new_holders.append(holder.scale(p_value))
+        return IterativeConstant(initial_holders=new_holders, name=self.name)
 
     @staticmethod
     def verify_names(iterator: IterativeConstant):
@@ -243,14 +229,12 @@ class IterativeConstant(Formatter):
         iterator = self.copy()
         iterator.holders[i] = holder
         self.verify_names(iterator)
-        self.update_counter()
         return iterator
 
     def append(self, holder: ScalerHolder) -> IterativeConstant:
         iterator = self.copy()
         iterator.holders.append(holder)
         self.verify_names(iterator)
-        self.update_counter()
         return iterator
 
     def conv(self, iterator: IterativeConstant, i: int, n: int) -> ScalerHolder:
@@ -272,5 +256,4 @@ class IterativeConstant(Formatter):
             c_n_i = a_i.multiply(b_n_minus_i)
             holder = holder.add(c_n_i)
 
-        self.update_counter()
         return holder
