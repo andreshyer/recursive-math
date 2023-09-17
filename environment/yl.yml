@@ -5,6 +5,5 @@ dependencies:
   - python>=3.11.0
   - numpy
   - numba
-  - matplotlib
   - tqdm
   - pytest
