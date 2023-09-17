@@ -88,6 +88,9 @@ class ScalerHolder(Formatter):
         self.update_counter()
         return ScalerHolder(initial_constants=new_constants, name=self.name)
 
+    def __len__(self):
+        return len(self.constants)
+
     def get(self, i: int) -> Decimal:
         self.update_counter()
         return self.constants[i]
@@ -193,6 +196,9 @@ class IterativeConstant(Formatter):
         new_holders = self.holders[item]
         self.update_counter()
         return IterativeConstant(initial_holders=new_holders, name=self.name)
+
+    def __len__(self):
+        return len(self.holders)
 
     def get(self, i: int) -> ScalerHolder:
         self.update_counter()
