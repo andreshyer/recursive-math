@@ -2,7 +2,7 @@ import unittest
 
 from tqdm import tqdm
 
-from src import IterativeConstant, ScalerHolder, Progress
+from src.recursive_math import IterativeConstant, ScalerHolder, Progress
 
 
 class LoadingBarTest(unittest.TestCase):

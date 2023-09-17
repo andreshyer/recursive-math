@@ -2,7 +2,7 @@ import unittest
 
 from numpy import array
 
-from src import Series, Tensor
+from src.recursive_math import Series, Tensor
 
 
 class SeriesTest(unittest.TestCase):

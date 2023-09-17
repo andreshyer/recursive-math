@@ -1,6 +1,6 @@
 from decimal import Decimal
 
-from src.iterative_constants import IterativeConstant, ScalerHolder
+from .iterative_constants import IterativeConstant, ScalerHolder
 
 
 def factorial(n: int) -> Decimal:

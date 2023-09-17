@@ -4,8 +4,8 @@ from decimal import Decimal, getcontext
 
 from numpy import array
 
-from src.progress import Progress
-from src.series import Series, Tensor
+from .progress import Progress
+from .series import Series, Tensor
 
 getcontext().prec = 1000
 

@@ -2,7 +2,7 @@ import unittest
 from decimal import Decimal
 from math import pi
 
-from src import Sin, Cos, ScalerHolder
+from src.recursive_math import Sin, Cos, ScalerHolder
 
 
 class CommonFunctionsTests(unittest.TestCase):
