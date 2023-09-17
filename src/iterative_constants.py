@@ -2,9 +2,9 @@ from __future__ import annotations
 from typing import List, Union
 from decimal import Decimal, getcontext
 
-from tqdm import tqdm
 from numpy import array
 
+from src.progress import Progress
 from src.series import Series, Tensor
 
 getcontext().prec = 1000
@@ -12,29 +12,6 @@ getcontext().prec = 1000
 
 def set_decimal_precision(precision: int):
     getcontext().prec = precision
-
-
-class Progress:
-    pbar: tqdm = None
-    counter: int = 0
-
-    @classmethod
-    def set_pbar(cls, pbar: tqdm):
-        cls.pbar = pbar
-
-    @classmethod
-    def update(cls):
-        cls.counter += 1
-        if cls.pbar is not None:
-            cls.pbar.update()
-
-    @classmethod
-    def get_counter(cls):
-        return cls.counter
-
-    @classmethod
-    def reset_counter(cls):
-        cls.counter = 0
 
 
 class Formatter:
