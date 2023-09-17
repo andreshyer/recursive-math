@@ -1,9 +1,12 @@
 import unittest
 from decimal import Decimal
-from src import IterativeConstant, ScalerHolder
+
+from numpy import array
+
+from src import IterativeConstant, ScalerHolder, Series, Tensor
 
 
-class BaseOperators(unittest.TestCase):
+class BaseOperatorsTest(unittest.TestCase):
 
     def test_scaler_add(self):
         a0 = ScalerHolder(initial_constants=[1], name="Bo")
@@ -72,10 +75,18 @@ class BaseOperators(unittest.TestCase):
 
     def test_scaler_slice(self):
         a0 = ScalerHolder(initial_constants=[1, 2, 3], name="Bo")
-        a2 = ScalerHolder(initial_constants=[1], name="Bo")
 
         a0 = a0[:1]
 
+        a2 = ScalerHolder(initial_constants=[1], name="Bo")
+        self.assertEqual(a0, a2)
+
+    def test_scaler_freeze(self):
+        a0 = ScalerHolder(initial_constants=[1, 2, 3], name="Bo")
+
+        a0 = a0.freeze()
+
+        a2 = Series(array([1.0, 2.0, 3.0]))
         self.assertEqual(a0, a2)
 
     def test_iterator_get(self):
@@ -122,13 +133,24 @@ class BaseOperators(unittest.TestCase):
         a2 = ScalerHolder(initial_constants=[1, 4, 10, 12, 9], name="Bo")
         self.assertEqual(a0, a2)
 
-    def test_complex_conv(self):
+    def test_iterator_complex_conv(self):
         a = ScalerHolder(initial_constants=[1, -2, 3], name="Bo")
         a_n = IterativeConstant(initial_holders=[a, a, a], name="a")
 
         a0 = a_n.conv(a_n.copy(), i=0, n=2)
 
         a2 = ScalerHolder(initial_constants=[3, -12, 30, -36, 27], name="Bo")
+        self.assertEqual(a0, a2)
+
+    def test_iterator_freeze(self):
+        a = ScalerHolder(initial_constants=[1, 2, 3], name="Bo")
+        a_n = IterativeConstant(initial_holders=[a, a, a], name="a")
+
+        a0 = a_n.freeze()
+
+        a2 = Tensor(array([[1.0, 2.0, 3.0],
+                           [1.0, 2.0, 3.0],
+                           [1.0, 2.0, 3.0]]))
         self.assertEqual(a0, a2)
 
 

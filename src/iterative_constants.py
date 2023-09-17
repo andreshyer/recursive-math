@@ -2,6 +2,10 @@ from __future__ import annotations
 from typing import List, Union
 from decimal import Decimal, getcontext
 
+from numpy import array
+
+from src.series import Series, Tensor
+
 _IterativeConstant_operator_counter = 0
 getcontext().prec = 1000
 
@@ -98,6 +102,12 @@ class ScalerHolder(Formatter):
     def copy(self) -> ScalerHolder:
         self.update_counter()
         return ScalerHolder(initial_constants=self.constants, name=self.name)
+
+    def freeze(self) -> Series:
+        constants = []
+        for constant in self.constants:
+            constants.append(float(constant))
+        return Series(array(constants))
 
     def scale(self, value: Union[float, Decimal]) -> ScalerHolder:
         value = Decimal(value)
@@ -207,6 +217,12 @@ class IterativeConstant(Formatter):
     def copy(self) -> IterativeConstant:
         self.update_counter()
         return IterativeConstant(initial_holders=self.holders, name=self.name)
+
+    def freeze(self) -> Tensor:
+        constants = []
+        for holder in self.holders:
+            constants.append(holder.freeze().constants)
+        return Tensor(array(constants))
 
     @staticmethod
     def verify_names(iterator: IterativeConstant):
