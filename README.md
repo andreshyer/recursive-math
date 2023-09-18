@@ -9,7 +9,7 @@ computationally efficient calculating values form the curve.
 
 # Installation
 
-`pip install recursive_math`
+`pip install git+https://github.com/andreshyer/recursive-math.git`
 
 # Overview
 
@@ -35,7 +35,7 @@ The equation above can be solved very easily in a closed form solution.
 There are many equations that cannot be easily solved in closed form,
 but can be easily solved in series form.
 
-$$y*y''+ 2y'= B \sin{x}, \\ y(0)=1, \\ y(0)=1$$
+$$y*y''+ 2y'= B \sin{x}, \\ y(0)=1, \\ y'(0)=1$$
 
 $$y = \sum_{n=0}^\infty a_n x^n, \\ \\ a_0=a_1=1$$
 
@@ -159,7 +159,7 @@ for n in range(N):
     b_n = b_n.append(b_i)
 
 print(a_n)
->>>a₀: 1.000e+0 B⁰, a₁: 1.000e+0 B⁰, a₂: -2.000e+0 B⁰ + 0.000e+3 B¹, a₃: 2.000e+0 B⁰ + 2.500e-1 B¹, 
+>>>[a₀: 1.000e+0 B⁰, a₁: 1.000e+0 B⁰, a₂: -2.000e+0 B⁰ + 0.000e+3 B¹, a₃: 2.000e+0 B⁰ + 2.500e-1 B¹, 
 a₄: -3.556e+0 B⁰ + -3.333e-1 B¹, a₅: 1.778e+0 B⁰ + 1.562e-1 B¹, a₆: -7.076e+0 B⁰ + -8.008e-1 B¹ + -1.500e-2 B², ...]
 ```
 
