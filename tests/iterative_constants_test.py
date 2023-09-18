@@ -106,7 +106,7 @@ class BaseOperatorsTest(unittest.TestCase):
         a = ScalerHolder(initial_constants=[1, 2, 3], name="Bo")
         b_n = IterativeConstant(initial_holders=[a], name="a")
 
-        b_n.append(a.add(a.copy()))
+        b_n = b_n.append(a.add(a.copy()))
         a0 = b_n.get(1)
 
         a2 = ScalerHolder(initial_constants=[2, 4, 6], name="Bo")
@@ -117,7 +117,7 @@ class BaseOperatorsTest(unittest.TestCase):
         a = ScalerHolder(initial_constants=[1, 2, 3], name="Bo")
         b_n = IterativeConstant(initial_holders=[a], name="a")
 
-        b_n.update(0, a.add(a.copy()))
+        b_n = b_n.update(0, a.add(a.copy()))
         a0 = b_n.get(0)
 
         a2 = ScalerHolder(initial_constants=[2, 4, 6], name="Bo")
