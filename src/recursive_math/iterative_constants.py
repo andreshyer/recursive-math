@@ -87,8 +87,12 @@ class ScalerHolder(Formatter):
         return self.constants[i]
 
     def copy(self) -> ScalerHolder:
+        new_constants = []
+        for constant in self.constants:
+            new_constants.append(Decimal(constant))
+
         Progress.update()
-        return ScalerHolder(initial_constants=self.constants, name=self.name)
+        return ScalerHolder(initial_constants=self.constants.copy(), name=self.name)
 
     def freeze(self) -> Series:
         constants = []
@@ -211,8 +215,12 @@ class IterativeConstant(Formatter):
         return self.holders[i]
 
     def copy(self) -> IterativeConstant:
+        new_holders = []
+        for holder in self.holders:
+            new_holders.append(holder.copy())
+
         Progress.update()
-        return IterativeConstant(initial_holders=self.holders, name=self.name)
+        return IterativeConstant(initial_holders=new_holders, name=self.name)
 
     def freeze(self) -> Tensor:
         constants = []
