@@ -60,24 +60,39 @@ With the general philosophy that it is acceptable for a large amount of resource
 if it only needs to be done once.
 
 In this repo, there are four main concepts.
-1) Coeifficents should be able to be written in terms of a constant.
-2) Series contain many coeifficents which are in terms of a constant.
+1) Raw coeifficents (ScalerHolders) should be able to be written in terms of a constant.
+2) Raw series (IterativeConstants) contain many coeifficents which are in terms of a constant.
 3) Mathamatical operations can be done on either series or coeifficents.
 5) Calculating the coeifficents in the series requries high precision.
 6) Using the coeifficents does not require precision and should be fast.
 
-For example:
+ScalerHolder example:
 
 $$a_2 = 1 + B/4$$
-
-Can be expressed as a `ScalerHolder`
 
 ```python
 from decimal import Decimal
 from recursive_math import ScalerHolder
 D = Decimal
 
-B = ScalerHolder(initial_constants=[1, D(1)/D(4)], name="B")
-print(B)
+a_2 = ScalerHolder(initial_constants=[1, D(1)/D(4)], name="B")
+print(a_2)
 >>>1.000e+0 B⁰ + 2.500e-1 B¹
+```
+
+IterativeConstant example
+
+$$a_0 = 1, \\ a_1 = 1$$
+
+```python
+from decimal import Decimal
+from recursive_math import ScalerHolder, IterativeConstant
+D = Decimal
+
+a_0 = ScalerHolder(initial_constants=[1], name="B")
+a_1 = ScalerHolder(initial_constants=[1], name="B")
+
+a_n = IterativeConstant(initial_holders=[a_0, a_1], name="a")
+print(a_n)
+>>>[a₀: 1.000e+0 B⁰, a₁: 1.000e+0 B⁰]
 ```
