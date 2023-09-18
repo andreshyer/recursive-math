@@ -9,10 +9,9 @@ name = "recursive_math"
 version = "1.0.0"
 description = "Methods for recursively solving coeifficents."
 readme = "README.md"
-authors = [{ name = "Andres Hyer", email = "andreshyer@gmail.com" }]
-license = { file = "MIT License" }
+license = "MIT"
+authors = ["Andres Hyer <andreshyer@gmail.com>"]
 classifiers = [
-    "Development Status :: 5 - Production/Stable",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
 ]

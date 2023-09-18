@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import List, Union
 from decimal import Decimal, getcontext
 
-from numpy import array
+from numpy import array, pad
 
 from .progress import Progress
 from .series import Series, Tensor
@@ -229,9 +229,15 @@ class IterativeConstant(Formatter):
         return IterativeConstant(initial_holders=new_holders, name=self.name)
 
     def freeze(self) -> Tensor:
+
         constants = []
         for holder in self.holders:
             constants.append(holder.freeze().constants)
+
+        max_length = max(len(sub_constants) for sub_constants in constants)
+        for i, sub_constants in enumerate(constants):
+            pad_length = max_length - len(sub_constants)
+            constants[i] = pad(sub_constants, (0, pad_length), 'constant', constant_values=0)
 
         Progress.update()
         return Tensor(array(constants))

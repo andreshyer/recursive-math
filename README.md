@@ -4,12 +4,16 @@
 
 This repo is designed to abstract many of the ideas of solving recursive coefficients,
 with a goal of allowing for the pseudo-functional programming of coefficients.
-After solving for the coeifficents in terms of an abitary constant, if one exists,
-computationally efficent calculating values form the curve.
+After solving for the coefficients in terms of an arbitrary constant, if one exists,
+computationally efficient calculating values form the curve.
+
+# Installation
+
+`pip install recursive_math`
 
 # Overview
 
-For many ODEs with inital value boundary conditions, 
+For many ODEs with initial value boundary conditions, 
 they can be solved in series form recursively.
 Taking a simple case.
 
@@ -20,10 +24,10 @@ the following series can be assumed.
 
 $$y = \sum_{n=0}^\infty a_n x^n$$
 
-Where the first coeifficents are defined by the bondary conditions,
+Where the first coefficients are defined by the boundary conditions,
 $a_0 = 1$ and $a_1 = 0$.
 Plugging in the series back into the equation 
-leads to the following recusion solution for $a_n$ terms.
+leads to the following recursion solution for $a_n$ terms.
 
 $$a_{n+2} = \frac{B}{(n+1)(n+2)} a_n$$
 
@@ -53,18 +57,18 @@ $$a_0 b_n + \sum_{i=1}^n a_i b_{n-i} = B f_n - c_n$$
 
 $$a_{n+2} = \frac{1}{(n+1)(n+2)} \left( B f_n - c_n - g_n \right) = F(B, n, a_0, a_1, ..., a_n)$$
 
-For many equations, it is easier and faster to use numerical appromiaxtion than to use a series solution.
-This repo attempts to bridge the gap where each coeifficent can be solved in terms of B, a_n = a_n(B).
-When B is specified, the coeifficents can quickly be solved and used. 
-With the general philosophy that it is acceptable for a large amount of resources and time to generate coeifficent equations,
+For many equations, it is easier and faster to use numerical approximation than to use a series solution.
+This repo attempts to bridge the gap where each coefficient can be solved in terms of B, a_n = a_n(B).
+When B is specified, the coefficients can quickly be solved and used. 
+With the general philosophy that it is acceptable for a large amount of resources and time to generate coefficient equations,
 if it only needs to be done once.
 
 In this repo, there are only a few main concepts.
-1) Raw coeifficents (ScalerHolders) should be able to be written in terms of a constant.
-2) Raw series (IterativeConstants) contain many coeifficents which are in terms of a constant.
-3) Mathamatical operations can be done on either series or coeifficents.
-5) Calculating the coeifficents in the series requries high precision.
-6) Using the coeifficents does not require precision and should be fast.
+1) Raw coefficients (ScalerHolders) should be able to be written in terms of a constant.
+2) Raw series (IterativeConstants) contain many coefficients which are in terms of a constant.
+3) Mathematical operations can be done on either series or coefficients.
+5) Calculating the coefficients in the series requires high precision.
+6) Using the coefficients does not require precision and should be fast.
 
 ScalerHolder example:
 
@@ -155,8 +159,29 @@ for n in range(N):
     b_n = b_n.append(b_i)
 
 print(a_n)
->>>a₀: 1.000e+0 B⁰, a₁: 1.000e+0 B⁰, a₂: -2.000e+0 B⁰ + 0.000e+3 B¹, a₃: 2.000e+0 B⁰ + 2.500e-1 B¹, a₄: -3.556e+0 B⁰ + -3.333e-1 B¹, a₅: 1.778e+0 B⁰ + 1.562e-1 B¹, a₆: -7.076e+0 B⁰ + -8.008e-1 B¹ + -1.500e-2 B², ...]
+>>>a₀: 1.000e+0 B⁰, a₁: 1.000e+0 B⁰, a₂: -2.000e+0 B⁰ + 0.000e+3 B¹, a₃: 2.000e+0 B⁰ + 2.500e-1 B¹, 
+a₄: -3.556e+0 B⁰ + -3.333e-1 B¹, a₅: 1.778e+0 B⁰ + 1.562e-1 B¹, a₆: -7.076e+0 B⁰ + -8.008e-1 B¹ + -1.500e-2 B², ...]
 ```
 
-The coeifficents are linearly depends on B all the way up to $a_6$, which is surprising at frist glance.
-But after calculating the coeifficents in terms of B, they can quickly be solved given a value for B.
+The coefficients are linearly depends on B all the way up to $a_6$, which is surprising.
+
+Precision:
+
+The precision is set very high by default
+
+```python
+# Default precision
+from decimal import getcontext
+getcontext().prec = 1000
+```
+
+This precision is not used for the final calculations,
+but only to generate the coefficient equations.
+This precision can easily be lowered if not needed,
+either using the method above or using a built-in function.
+
+```python
+from recursive_math import set_decimal_precision
+set_decimal_precision(100)
+```
+
