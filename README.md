@@ -40,4 +40,44 @@ $$\left(\sum_{n=0}^\infty a_n x^n\right) \left( \sum_{n=0}^\infty b_n x^n \right
 $$b_n = (n+1)(n+2) a_{n+2}$$
 
 $$c_n = 2 (n+1) a_{n+1}$$
+
+$$\sum_{n=0}^\infty d_n x^n + \sum_{n=0}^\infty c_n x^n = \sum_{n=0}^\infty B f_n x^n$$
+
+$$d_n = \sum_{i=0}^n a_i b_{n-i}$$
+
+$$d_n = B f_n - c_n$$
+
+$$\sum_{i=0}^n a_i b_{n-i} = B f_n - c_n$$
  
+$$a_0 b_n + \sum_{i=1}^n a_i b_{n-i} = B f_n - c_n$$
+
+$$a_{n+2} = \frac{1}{(n+1)(n+2)} \left( B f_n - c_n - \sum_{i=1}^n a_i b_{n-i} \right) = F(B, n, a_0, a_1, ..., a_n)$$
+
+For many equations, it is easier and faster to use numerical appromiaxtion than to use a series solution.
+This repo attempts to bridge the gap where each coeifficent can be solved in terms of B, a_n = a_n(B).
+When B is specified, the coeifficents can quickly be solved and used. 
+With the general philosophy that it is acceptable for a large amount of resources and time to generate coeifficent equations,
+if it only needs to be done once.
+
+In this repo, there are four main concepts.
+1) Coeifficents should be able to be written in terms of a constant.
+2) Series contain many coeifficents which are in terms of a constant.
+3) Mathamatical operations can be done on either series or coeifficents.
+5) Calculating the coeifficents in the series requries high precision.
+6) Using the coeifficents does not require precision and should be fast.
+
+For example:
+
+$$a_2 = 1 + B/4$$
+
+Can be expressed as a `ScalerHolder`
+
+```python
+from decimal import Decimal
+from recursive_math import ScalerHolder
+D = Decimal
+
+B = ScalerHolder(initial_constants=[1, D(1)/D(4)], name="B")
+print(B)
+>>>1.000e+0 B⁰ + 2.500e-1 B¹
+```
