@@ -14,6 +14,7 @@ class Sin(IterativeConstant):
 
     def __init__(self, name: str, holder_name: str, max_n: int = 27):
         self.max_n: int = max_n
+        self.holder_name: str = holder_name
         holder = ScalerHolder(initial_constants=[0], name=holder_name)
         super().__init__(initial_holders=[holder], name=name)
 
@@ -27,13 +28,17 @@ class Sin(IterativeConstant):
             value = Decimal(sign) * value
 
         holder = ScalerHolder(initial_constants=[value], name=self.holders[0].name)
-        return self.append(holder)
+
+        holders = self.holders
+        holders.append(holder)
+        return Sin(name=self.name, holder_name=self.holder_name, max_n=self.max_n)
 
 
 class Cos(IterativeConstant):
 
     def __init__(self, name: str, holder_name: str, max_n: int = 26):
         self.max_n: int = max_n
+        self.holder_name: str = holder_name
         holder = ScalerHolder(initial_constants=[1], name=holder_name)
         super().__init__(initial_holders=[holder], name=name)
 
@@ -47,4 +52,7 @@ class Cos(IterativeConstant):
             value = Decimal(sign) * value
 
         holder = ScalerHolder(initial_constants=[value], name=self.holders[0].name)
-        return self.append(holder)
+
+        holders = self.holders
+        holders.append(holder)
+        return Cos(name=self.name, holder_name=self.holder_name, max_n=self.max_n)
