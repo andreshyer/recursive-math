@@ -51,7 +51,7 @@ $$\sum_{i=0}^n a_i b_{n-i} = B f_n - c_n$$
  
 $$a_0 b_n + \sum_{i=1}^n a_i b_{n-i} = B f_n - c_n$$
 
-$$a_{n+2} = \frac{1}{(n+1)(n+2)} \left( B f_n - c_n - \sum_{i=1}^n a_i b_{n-i} \right) = F(B, n, a_0, a_1, ..., a_n)$$
+$$a_{n+2} = \frac{1}{(n+1)(n+2)} \left( B f_n - c_n - g_n \right) = F(B, n, a_0, a_1, ..., a_n)$$
 
 For many equations, it is easier and faster to use numerical appromiaxtion than to use a series solution.
 This repo attempts to bridge the gap where each coeifficent can be solved in terms of B, a_n = a_n(B).
@@ -80,7 +80,7 @@ print(a_2)
 >>>1.000e+0 B⁰ + 2.500e-1 B¹
 ```
 
-IterativeConstant example
+IterativeConstant example:
 
 $$a_0 = 1, \\ a_1 = 1$$
 
@@ -96,3 +96,9 @@ a_n = IterativeConstant(initial_holders=[a_0, a_1], name="a")
 print(a_n)
 >>>[a₀: 1.000e+0 B⁰, a₁: 1.000e+0 B⁰]
 ```
+
+Math Operations examples:
+
+The easiest way to show an example of the mathamatical operations that are possible
+is by solving a real-world problem. 
+Looking at the example from earlier
