@@ -185,3 +185,17 @@ from recursive_math import set_decimal_precision
 set_decimal_precision(100)
 ```
 
+Using coefficients:
+
+While calculating the coefficients is often complex and take a long time,
+using the constants is highly optimized.
+
+```python
+y = a_n.freeze()
+y = y.reduce(scaler_value=1)  # Specify what B is
+
+x = np.array([0.1, 0.5, 1])
+y = y.evaluate(x=x)
+print(y)
+>>>[1.08188045 1.09863281 0.29513889]
+```
