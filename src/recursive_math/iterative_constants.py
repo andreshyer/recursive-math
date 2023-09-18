@@ -47,6 +47,7 @@ class ScalerHolder(Formatter):
 
     def __init__(self, initial_constants: List[Union[float, Decimal]], name: str):
         super().__init__()
+        self.epsilon = Decimal(10) ** (-Decimal(getcontext().prec))
         self.name: str = name
         self.constants: List[Decimal] = []
         for initial_constant in initial_constants:
@@ -155,6 +156,11 @@ class ScalerHolder(Formatter):
                 if len_holder_constants > n - i >= 0:
                     constant += self_holder.constants[i] * holder.constants[n - i]
             new_constants.append(constant)
+
+        upper_index = len(new_constants) - 1
+        while upper_index >= 0 and new_constants[upper_index] <= self.epsilon:
+            upper_index -= 1
+        new_constants = new_constants[:upper_index + 1]
 
         Progress.update()
         return ScalerHolder(initial_constants=new_constants, name=self.name)
