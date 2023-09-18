@@ -159,8 +159,8 @@ for n in range(N):
     b_n = b_n.append(b_i)
 
 print(a_n)
->>>[a₀: 1.000e+0 B⁰, a₁: 1.000e+0 B⁰, a₂: -2.000e+0 B⁰ + 0.000e+3 B¹, a₃: 2.000e+0 B⁰ + 2.500e-1 B¹, 
-a₄: -3.556e+0 B⁰ + -3.333e-1 B¹, a₅: 1.778e+0 B⁰ + 1.562e-1 B¹, a₆: -7.076e+0 B⁰ + -8.008e-1 B¹ + -1.500e-2 B², ...]
+>>>[a₀: 1.000e+0 B⁰, a₁: 1.000e+0 B⁰, a₂: -1.000e+0 B⁰ + 0.000e+2 B¹, a₃: 6.667e-1 B⁰ + 1.667e-1 B¹,
+a₄: -8.333e-1 B⁰ + -1.667e-1 B¹, a₅: 3.333e-1 B⁰ + 5.833e-2 B¹, a₆: -8.111e-1 B⁰ + -1.806e-1 B¹ + -5.556e-3 B², ...]
 ```
 
 The coefficients are linearly depends on B all the way up to $a_6$, which is surprising.
