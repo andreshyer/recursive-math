@@ -66,6 +66,13 @@ class ScalerHolder(Formatter):
                 condensed_string += " + "
         return condensed_string
 
+    def verify_constants(self, constants: List[Decimal]):
+        upper_index = len(constants) - 1
+        while upper_index >= 0 and constants[upper_index] <= self.epsilon:
+            upper_index -= 1
+        new_constants = constants[:upper_index + 1]
+        return new_constants
+
     def __str__(self) -> str:
         return self.condense()
 
@@ -126,12 +133,14 @@ class ScalerHolder(Formatter):
         len_self_constants = len(self.constants)
         len_holder_constants = len(holder.constants)
 
-        new_constants = [0] * max(len_self_constants, len_holder_constants)
+        new_constants = [Decimal(0)] * max(len_self_constants, len_holder_constants)
         for i in range(len(new_constants)):
             if i < len_self_constants:
                 new_constants[i] += self.constants[i]
             if i < len_holder_constants:
                 new_constants[i] += holder.constants[i]
+
+        new_constants = self.verify_constants(constants=new_constants)
 
         Progress.update()
         return ScalerHolder(initial_constants=new_constants, name=self.name)
@@ -157,10 +166,7 @@ class ScalerHolder(Formatter):
                     constant += self_holder.constants[i] * holder.constants[n - i]
             new_constants.append(constant)
 
-        upper_index = len(new_constants) - 1
-        while upper_index >= 0 and new_constants[upper_index] <= self.epsilon:
-            upper_index -= 1
-        new_constants = new_constants[:upper_index + 1]
+        new_constants = self.verify_constants(constants=new_constants)
 
         Progress.update()
         return ScalerHolder(initial_constants=new_constants, name=self.name)
