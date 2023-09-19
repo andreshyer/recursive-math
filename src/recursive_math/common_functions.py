@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import List
 
 from decimal import Decimal
@@ -23,7 +24,7 @@ class Sin(IterativeConstant):
         else:
             super().__init__(initial_holders=holders, name=name)
 
-    def next_term(self) -> IterativeConstant:
+    def next_term(self) -> Sin:
         n_p_1 = len(self)
         if n_p_1 % 2 == 0 or n_p_1 > self.max_n:
             value = 0
@@ -49,7 +50,7 @@ class Cos(IterativeConstant):
         else:
             super().__init__(initial_holders=holders, name=name)
 
-    def next_term(self) -> IterativeConstant:
+    def next_term(self) -> Cos:
         n_p_1 = len(self)
         if n_p_1 % 2 != 0 or n_p_1 > self.max_n:
             value = 0
