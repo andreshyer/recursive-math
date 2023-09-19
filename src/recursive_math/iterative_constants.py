@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import List, Union
 from decimal import Decimal, getcontext
 
-from numpy import array, pad
+from numpy import array
 
 from .progress import Progress
 from .series import Series, Tensor
@@ -65,13 +65,6 @@ class ScalerHolder(Formatter):
             if i != num_constant - 1:
                 condensed_string += " + "
         return condensed_string
-
-    def verify_constants(self, constants: List[Decimal]):
-        upper_index = len(constants) - 1
-        while upper_index >= 0 and constants[upper_index] <= self.epsilon:
-            upper_index -= 1
-        new_constants = constants[:upper_index + 1]
-        return new_constants
 
     def __str__(self) -> str:
         return self.condense()
@@ -140,8 +133,6 @@ class ScalerHolder(Formatter):
             if i < len_holder_constants:
                 new_constants[i] += holder.constants[i]
 
-        new_constants = self.verify_constants(constants=new_constants)
-
         Progress.update()
         return ScalerHolder(initial_constants=new_constants, name=self.name)
 
@@ -166,7 +157,10 @@ class ScalerHolder(Formatter):
                     constant += self_holder.constants[i] * holder.constants[n - i]
             new_constants.append(constant)
 
-        new_constants = self.verify_constants(constants=new_constants)
+        upper_index = len(new_constants) - 1
+        while upper_index >= 0 and new_constants[upper_index] <= self.epsilon:
+            upper_index -= 1
+        new_constants = new_constants[:upper_index + 1]
 
         Progress.update()
         return ScalerHolder(initial_constants=new_constants, name=self.name)
@@ -241,9 +235,9 @@ class IterativeConstant(Formatter):
             constants.append(holder.freeze().constants)
 
         max_length = max(len(sub_constants) for sub_constants in constants)
-        for i, sub_constants in enumerate(constants):
-            pad_length = max_length - len(sub_constants)
-            constants[i] = pad(sub_constants, (0, pad_length), 'constant', constant_values=0)
+        for sub_constants in constants:
+            while len(sub_constants) < max_length:
+                sub_constants.append(0)
 
         Progress.update()
         return Tensor(array(constants))
