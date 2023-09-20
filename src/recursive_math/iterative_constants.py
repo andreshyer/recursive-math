@@ -292,7 +292,7 @@ class IterativeConstant(Formatter):
         if i > n:
             raise ValueError("Lower index, i, cannot be larger than upper index.")
 
-        N = len(self_iterator.holders)
+        N = len(self_iterator.holders) - 1
 
         holder = ScalerHolder(initial_constants=[0], name=iterator.holders[0].name)
         for i in range(i, n + 1):
