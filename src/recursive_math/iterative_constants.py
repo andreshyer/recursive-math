@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import List, Union
 from decimal import Decimal, getcontext
 
-from numpy import array
+from numpy import array, append
 
 from .progress import Progress
 from .series import Series, Tensor
@@ -237,7 +237,7 @@ class IterativeConstant(Formatter):
         max_length = max(len(sub_constants) for sub_constants in constants)
         for sub_constants in constants:
             while len(sub_constants) < max_length:
-                sub_constants.append(0)
+                sub_constants = append(sub_constants, 0)
 
         Progress.update()
         return Tensor(array(constants))

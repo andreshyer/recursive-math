@@ -125,12 +125,15 @@ class BaseOperatorsTest(unittest.TestCase):
         self.assertEqual(a0, a2)
 
     def test_iterator_simple_conv(self):
-        a = ScalerHolder(initial_constants=[1, 2, 3], name="Bo")
-        a_n = IterativeConstant(initial_holders=[a], name="a")
+        a0 = ScalerHolder(initial_constants=[1], name="Bo")
+        a1 = ScalerHolder(initial_constants=[2], name="Bo")
+        a2 = ScalerHolder(initial_constants=[3], name="Bo")
+        a_n = IterativeConstant(initial_holders=[a0, a1, a2], name="a")
 
-        a0 = a_n.conv(a_n.copy(), i=0, n=0)
+        a0 = a_n.conv(a_n.copy(), i=0, n=2)
+        print(a_n.conv(a_n.copy(), i=0, n=2))
 
-        a2 = ScalerHolder(initial_constants=[1, 4, 10, 12, 9], name="Bo")
+        a2 = ScalerHolder(initial_constants=[10], name="Bo")
         self.assertEqual(a0, a2)
 
     def test_iterator_complex_conv(self):
