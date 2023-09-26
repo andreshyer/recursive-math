@@ -235,12 +235,15 @@ class IterativeConstant(Formatter):
             constants.append(holder.freeze().constants)
 
         max_length = max(len(sub_constants) for sub_constants in constants)
+        new_constants = []
         for sub_constants in constants:
-            while len(sub_constants) < max_length:
-                sub_constants = append(sub_constants, 0)
+            new_sub_constants = sub_constants.tolist()
+            while len(new_sub_constants) < max_length:
+                new_sub_constants.append(0)
+            new_constants.append(new_sub_constants)
 
         Progress.update()
-        return Tensor(array(constants))
+        return Tensor(array(new_constants))
 
     def scale(self, value: Union[float, Decimal]) -> IterativeConstant:
         new_holders = []
