@@ -28,6 +28,14 @@ class BaseOperatorsTest(unittest.TestCase):
         a2 = ScalerHolder(initial_constants=[3, 0, 1], name="Bo")
         self.assertEqual(a0, a2)
 
+    def test_scaler_decrease_order(self):
+        a0 = ScalerHolder(initial_constants=[0, 1], name="Bo")
+
+        a0 = a0.decrease_scaler()
+
+        a2 = ScalerHolder(initial_constants=[1], name="Bo")
+        self.assertEqual(a0, a2)
+
     def test_scaler_decimal_add(self):
         a0 = ScalerHolder(initial_constants=[Decimal(1)], name="Bo")
         a1 = ScalerHolder(initial_constants=[3.0], name="Bo")

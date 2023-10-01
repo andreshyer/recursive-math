@@ -119,6 +119,16 @@ class ScalerHolder(Formatter):
         Progress.update()
         return holder
 
+    def decrease_scaler(self) -> ScalerHolder:
+        holder = self.copy()
+
+        if holder.constants[0] > self.epsilon:
+            raise ValueError(f"Leading constant is not zero: {holder.constants[0]}")
+
+        holder.constants.pop(0)
+        Progress.update()
+        return holder
+
     def add(self, holder: ScalerHolder) -> ScalerHolder:
         if holder.name != self.name:
             raise TypeError("Scaler types do not match")
