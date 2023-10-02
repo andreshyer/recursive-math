@@ -163,7 +163,7 @@ class ScalerHolder(Formatter):
                 break
             ending_slice += 1
 
-        new_holder = new_holder[:(len(new_holder) - ending_slice)]
+        new_holder = new_holder[:(len(new_holder) - ending_slice + 1)]
 
         Progress.update()
         return new_holder
