@@ -9,7 +9,7 @@ class LoadingBarTest(unittest.TestCase):
 
     def test_loading_bar(self):
 
-        total = 76
+        total = 82
         with tqdm(total=total, desc="Testing loading bar") as pbar:
             Progress.set_pbar(pbar)
             Progress.reset_counter()

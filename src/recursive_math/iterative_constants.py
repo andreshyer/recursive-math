@@ -157,8 +157,14 @@ class ScalerHolder(Formatter):
             for m, c2 in enumerate(holder.constants):
                 new_holder.constants[n + m] += c1 * c2
 
+        new_constants = new_holder.constants
+        upper_index = len(new_constants) - 1
+        while upper_index >= 0 and new_constants[upper_index] <= self.epsilon:
+            upper_index -= 1
+        new_constants = new_constants[:upper_index + 1]
+
         Progress.update()
-        return new_holder
+        return ScalerHolder(initial_constants=new_constants, name=self.name)
 
 
 class IterativeConstant(Formatter):
