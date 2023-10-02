@@ -62,6 +62,14 @@ class BaseOperatorsTest(unittest.TestCase):
         a2 = ScalerHolder(initial_constants=[-1, -2, -3], name="Bo")
         self.assertEqual(a0, a2)
 
+    def test_empty_drop_zeros(self):
+        a0 = ScalerHolder(initial_constants=[0], name="Bo")
+
+        a0 = a0.drop_ending_zeros()
+
+        a2 = ScalerHolder(initial_constants=[0], name="Bo")
+        self.assertEqual(a0, a2)
+
     def test_scalar_copy(self):
         a0 = ScalerHolder(initial_constants=[1, 2, 3], name="Bo")
         a1 = a0.copy()

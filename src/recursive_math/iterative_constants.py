@@ -119,8 +119,13 @@ class ScalerHolder(Formatter):
                 break
             ending_slice += 1
 
+        if ending_slice == len(self):
+            new_holder = ScalerHolder(initial_constants=[self.get(0)], name=self.name)
+        else:
+            new_holder = self[:(len(self) - ending_slice)]
+
         Progress.update()
-        return self[:(len(self) - ending_slice)]
+        return new_holder
 
     def increase_scaler(self) -> ScalerHolder:
         holder = self.copy()
