@@ -115,7 +115,7 @@ class ScalerHolder(Formatter):
     def drop_ending_zeros(self) -> ScalerHolder:
         ending_slice = 0
         for i, c in enumerate(reversed(self.constants)):
-            if c > self.epsilon:
+            if abs(c) > self.epsilon:
                 break
             ending_slice += 1
 
