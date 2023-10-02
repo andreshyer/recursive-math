@@ -151,29 +151,14 @@ class ScalerHolder(Formatter):
             raise TypeError("Scaler types do not match")
         self_holder = self.copy()
 
-        len_self_constants = len(self_holder.constants)
-        len_holder_constants = len(holder.constants)
-        max_len_constants = max(len_self_constants, len_holder_constants)
-
-        # Pad so that both have the same size
-        self_holder.constants.extend([Decimal(0)] * max(0, max_len_constants - len_self_constants))
-        holder.constants.extend([Decimal(0)] * max(0, max_len_constants - len_holder_constants))
-
-        new_constants = []
-        for n in range(2 * max_len_constants - 1):
-            constant = Decimal(0)
-            for i in range(len_self_constants):
-                if len_holder_constants > n - i >= 0:
-                    constant += self_holder.constants[i] * holder.constants[n - i]
-            new_constants.append(constant)
-
-        upper_index = len(new_constants) - 1
-        while upper_index >= 0 and new_constants[upper_index] <= self.epsilon:
-            upper_index -= 1
-        new_constants = new_constants[:upper_index + 1]
+        max_length = max(len(self_holder), len(holder))
+        new_holder = ScalerHolder(initial_constants=[0] * (2*max_length - 1), name=self.name)
+        for n, c1 in enumerate(self_holder.constants):
+            for m, c2 in enumerate(holder.constants):
+                new_holder.constants[n + m] += c1 * c2
 
         Progress.update()
-        return ScalerHolder(initial_constants=new_constants, name=self.name)
+        return new_holder
 
 
 class IterativeConstant(Formatter):
