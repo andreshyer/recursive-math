@@ -112,6 +112,16 @@ class ScalerHolder(Formatter):
         Progress.update()
         return ScalerHolder(initial_constants=new_constants, name=self.name)
 
+    def drop_ending_zeros(self) -> ScalerHolder:
+        ending_slice = 0
+        for i, c in enumerate(reversed(self.constants)):
+            if c > self.epsilon:
+                break
+            ending_slice += 1
+
+        Progress.update()
+        return self[:(len(self) - ending_slice)]
+
     def increase_scaler(self) -> ScalerHolder:
         holder = self.copy()
         holder.constants.insert(0, Decimal(0))
@@ -156,14 +166,6 @@ class ScalerHolder(Formatter):
         for n, c1 in enumerate(self_holder.constants):
             for m, c2 in enumerate(holder.constants):
                 new_holder.constants[n + m] += c1 * c2
-
-        # ending_slice = 0
-        # for i, c in enumerate(reversed(new_holder.constants)):
-        #     if c > self.epsilon:
-        #         break
-        #     ending_slice += 1
-        #
-        # new_holder = new_holder[:(len(new_holder) - ending_slice)]
 
         Progress.update()
         return new_holder
@@ -252,6 +254,14 @@ class IterativeConstant(Formatter):
         new_holders = []
         for holder in self.holders:
             new_holders.append(holder.scale(value))
+
+        Progress.update()
+        return IterativeConstant(initial_holders=new_holders, name=self.name)
+
+    def drop_ending_zeros(self) -> IterativeConstant:
+        new_holders = []
+        for holder in self.holders:
+            new_holders.append(holder.drop_ending_zeros())
 
         Progress.update()
         return IterativeConstant(initial_holders=new_holders, name=self.name)
