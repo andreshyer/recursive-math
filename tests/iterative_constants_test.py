@@ -46,7 +46,7 @@ class BaseOperatorsTest(unittest.TestCase):
         self.assertEqual(a0, a2)
 
     def test_scaler_multiply(self):
-        a0 = ScalerHolder(initial_constants=[1, 2, 3, 0], name="Bo")
+        a0 = ScalerHolder(initial_constants=[1, 2, 3], name="Bo")
         a1 = ScalerHolder(initial_constants=[1, 2, 3], name="Bo")
 
         a0 = a0.multiply(a1)
