@@ -157,13 +157,13 @@ class ScalerHolder(Formatter):
             for m, c2 in enumerate(holder.constants):
                 new_holder.constants[n + m] += c1 * c2
 
-        # ending_slice = 0
-        # for i, c in enumerate(reversed(new_holder.constants)):
-        #     if c > self.epsilon:
-        #         break
-        #     ending_slice += 1
-        #
-        # new_holder = new_holder[:(len(new_holder) - ending_slice + 1)]
+        ending_slice = 0
+        for i, c in enumerate(reversed(new_holder.constants)):
+            if c > self.epsilon:
+                break
+            ending_slice += 1
+
+        new_holder = new_holder[:(len(new_holder) - ending_slice)]
 
         Progress.update()
         return new_holder
