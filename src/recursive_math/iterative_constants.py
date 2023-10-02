@@ -293,24 +293,13 @@ class IterativeConstant(Formatter):
         Progress.update()
         return iterator
 
-    def conv(self, iterator: IterativeConstant, i: int, n: int) -> ScalerHolder:
+    def conv(self, iterator: IterativeConstant, i: int, n: int, n_index: int) -> ScalerHolder:
         self_iterator = self.copy()
-
-        if len(self_iterator.holders) != len(iterator.holders):
-            raise ValueError("Sizes of iterators do not match.")
-        if len(iterator.holders) == 0:
-            raise ValueError("Cannot take convolution of empty iterators")
-        if n > len(self_iterator.holders):
-            raise ValueError("Upper index, n, cannot be larger than size of iterators")
-        if i > n:
-            raise ValueError("Lower index, i, cannot be larger than upper index.")
-
-        N = len(self_iterator.holders) - 1
 
         holder = ScalerHolder(initial_constants=[0], name=iterator.holders[0].name)
         for i in range(i, n + 1):
             a_i = self_iterator.get(i)
-            b_n_minus_i = iterator.get(N - i)
+            b_n_minus_i = iterator.get(n_index - i)
             c_n_i = a_i.multiply(b_n_minus_i)
             holder = holder.add(c_n_i)
 

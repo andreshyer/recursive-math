@@ -18,14 +18,14 @@ class LoadingBarTest(unittest.TestCase):
             a.scale(1)
 
             a0 = IterativeConstant(initial_holders=[a, a, a], name="a")
-            a0.conv(a0, i=0, n=2)
+            a0.conv(a0, i=0, n=2, n_index=2)
 
             b = ScalerHolder(initial_constants=[1, 2, 3], name="Bo")
             b.scale(1)
 
             b0 = IterativeConstant(initial_holders=[a, b, a], name="a")
 
-            a0.conv(b0, i=0, n=2)
+            a0.conv(b0, i=0, n=2, n_index=2)
 
             counter = Progress.get_counter()
             self.assertEqual(total, counter)
