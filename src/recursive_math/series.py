@@ -78,6 +78,6 @@ class Tensor:
 
 
 # Force run numba functions to have them compile before use
-evaluate_polynomial(0, array([]))
-n_evaluate_polynomial(array([0]), array([]))
-evaluate_polynomials(0, array([]))
+evaluate_polynomial(0, array([0]))
+n_evaluate_polynomial(array([0]), array([0]))
+evaluate_polynomials(0, array([[0], [0]]))
