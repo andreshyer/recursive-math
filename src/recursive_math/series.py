@@ -77,7 +77,8 @@ class Tensor:
         return Series(evaluate_polynomials(1, self.constants))
 
 
-# Force run numba functions to have them compile before use
-evaluate_polynomial(0, array([0]))
-n_evaluate_polynomial(array([0]), array([0]))
-evaluate_polynomials(0, array([[0], [0]]))
+# Force warmup numba functions to have them compile before use
+for _ in range(10):
+    evaluate_polynomial(0, array([0]))
+    n_evaluate_polynomial(array([0]), array([0]))
+    evaluate_polynomials(0, array([[0], [0]]))
