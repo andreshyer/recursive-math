@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Union
 
 import numba
-from numpy import ndarray, empty, float64, empty_like
+from numpy import array, ndarray, empty, float64, empty_like
 
 
 @numba.jit(nopython=True)
@@ -75,3 +75,9 @@ class Tensor:
             if len(c) != 1:
                 raise ValueError(f"Cannot flatten {self}")
         return Series(evaluate_polynomials(1, self.constants))
+
+
+# Force run numba functions to have them compile before use
+evaluate_polynomial(0, array([]))
+n_evaluate_polynomial(array([0]), array([]))
+evaluate_polynomials(0, array([]))
