@@ -78,7 +78,6 @@ class Tensor:
 
 
 # Force warmup numba functions to have them compile before use
-for _ in range(10):
-    evaluate_polynomial(0, array([0]))
-    n_evaluate_polynomial(array([0]), array([0]))
-    evaluate_polynomials(0, array([[0], [0]]))
+evaluate_polynomial(0, array([0]))
+n_evaluate_polynomial(array([0]), array([0]))
+evaluate_polynomials(0, array([[0], [0]]))
