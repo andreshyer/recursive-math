@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Union
 
 import numba
-from numpy import ndarray, empty, float64
+from numpy import ndarray, empty, float64, empty_like
 
 
 @numba.jit(nopython=True)
@@ -25,10 +25,14 @@ def evaluate_polynomials(scaler_value: float, matrix: ndarray) -> ndarray:
 
 @numba.jit(nopython=True)
 def n_evaluate_polynomial(x: ndarray, constants: ndarray) -> ndarray:
-    results = empty(x.shape[0], dtype=float64)
-    for i in range(len(x)):
-        results[i] = evaluate_polynomial(float(x[i]), constants)
-    return results
+    constants = constants[::-1]
+
+    value = empty_like(x)
+    value[:] = constants[0]
+
+    for i in range(1, len(constants)):
+        value = value * x + constants[i]
+    return value
 
 
 class Series:
